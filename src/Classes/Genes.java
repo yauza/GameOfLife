@@ -1,5 +1,7 @@
 package Classes;
 
+import Enums.Direction;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,5 +23,26 @@ public class Genes {
         }
         Arrays.sort(res);
         return res;
+    }
+
+    public Direction calculateDirection(){
+        Random generator = new Random();
+        int rand = Math.abs(generator.nextInt()) % 32;
+        Direction dir = Direction.NORTH;
+        Vector2d res = new Vector2d(0,0);
+        return dir.fromNumber(this.dna[rand]);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Genes)) return false;
+        Genes genes = (Genes) o;
+        return Arrays.equals(dna, genes.dna);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(dna);
     }
 }
