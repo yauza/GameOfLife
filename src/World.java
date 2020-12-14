@@ -6,20 +6,30 @@ import java.util.List;
 
 public class World {
     public static void main(String [] args){
-        List<Animal> animals = new ArrayList<>();
-        animals.add(new Animal(2, 3, 10));
-        animals.add(new Animal(4, 4, 10));
-        animals.add(new Animal(0, 1, 10));
 
-        List<Grass> grass = new ArrayList<>();
-        grass.add(new Grass(2,4,10));
-        grass.add(new Grass(1,1,10));
-        grass.add(new Grass(2,1,10));
+        try{
+            HashMap<Vector2d, List<Animal>> animals = new HashMap<>();
+            HashMap<Vector2d, Grass> grass = new HashMap<>();
+            Map map = new Map(10, 10, 5, 5, animals, grass, 10,2);
+            map.randomlyPlaceAnimals(6);
 
-        HashMap<Vector2d, List<Animal>> A;
+            int era = 10;
 
-       // Map map = new Map(5, 5,1,1, animals, grass);
-        //System.out.println(map);
+            while(era > 0){
+                System.out.println(map.animals.keySet());
+                System.out.println(map.animals.values());
+                map.fillTheMap();
+                System.out.println(map.toString());
+                map.NewEra();
+                era--;
+                System.out.println("---------------------------------------------------------------------------------------------");
+            }
+
+
+        }catch (IllegalArgumentException exception){
+            System.out.println(exception);
+            System.exit(1);
+        }
 
     }
 }

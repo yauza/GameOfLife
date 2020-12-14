@@ -4,11 +4,10 @@ import Interfaces.MapElement;
 
 public class Grass implements MapElement {
     public Vector2d position;
-    public int energy;
+    public double energy;
 
-    public Grass(int x, int y, int energy){
-        this.position.x = x;
-        this.position.y = y;
+    public Grass(Vector2d position, double energy){
+        this.position = position;
         this.energy = energy;
     }
 
