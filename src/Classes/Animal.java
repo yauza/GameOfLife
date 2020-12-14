@@ -5,32 +5,40 @@ import Interfaces.*;
 
 import java.util.Objects;
 
-public class Animal implements MapElement, MapElementObservable{
+public class Animal implements MapElement, MapElementObservable, Comparable<Animal>{
     public Vector2d position;
     public Vector2d lastPosition;
-    public int energy;
+    public double energy;
     public Direction direction;
     public Genes genes;
     public ObserverOfMapElements map;
+    public int numberOfChildren;
 
-    public Animal(int x, int y, int energy){
-        this.position.x = x;
-        this.position.y = y;
+    public Animal(Vector2d position, double energy, Map map){
+        this.position = position;
         this.energy = energy;
         this.genes = new Genes();
         this.direction = genes.calculateDirection();
+        this.numberOfChildren = 0;
+        this.map = map;
+    }
+
+    public String toString(){
+        return position.toString() + " energy: " + energy;
     }
 
 
     @Override
     public void moveElement(Vector2d dir) {
-
-        this.lastPosition.x = this.position.x;
-        this.lastPosition.y = this.position.y;
+        Vector2d lastPos = new Vector2d(this.position.x, this.position.y);
+//        this.lastPosition.x = this.position.x;
+//        this.lastPosition.y = this.position.y;
+        this.lastPosition = lastPos;
         this.position.x += dir.x;
         this.position.y += dir.y;
         notifyObserver(this.map);
     }
+
 
     @Override
     public Vector2d getPosition() {
@@ -54,6 +62,12 @@ public class Animal implements MapElement, MapElementObservable{
                 direction == animal.direction &&
                 Objects.equals(genes, animal.genes) &&
                 Objects.equals(map, animal.map);
+    }
+
+    public int compareTo(Animal a){
+        if(this.energy > a.energy) return -1;
+        else if (this.energy == a.energy) return 0;
+        else return 1;
     }
 
     @Override
