@@ -76,9 +76,9 @@ public class Map implements IMap, ObserverOfMapElements {
         addGrass();
         moveAnimals();
         updateAnimals();
-        //for(Grass g : grass.values()){
-            //eatGrass(g.getPosition());
-        //}
+//        for(Grass g : grass.values()){
+//            eatGrass(g.getPosition());
+//        }
         // reproduce
         // visualize
     }
@@ -116,8 +116,8 @@ public class Map implements IMap, ObserverOfMapElements {
                 Vector2d newPos = dir.vectorAddition(a.position);
 
                 if(outOfBounds(newPos)) {
-                    a.position = wrapAroundTheMap(newPos);
-                }else a.moveElement(dir);
+                    a.moveElement(wrapAroundTheMap(newPos), true);
+                }else a.moveElement(dir, false);
             }
         }
     }
@@ -188,7 +188,7 @@ public class Map implements IMap, ObserverOfMapElements {
 
     @Override
     public boolean place(MapElement element) {
-        Vector2d pos = element.getPosition();
+        Vector2d pos = new Vector2d(element.getPosition());
         if(outOfBounds(pos)){
             throw new IllegalArgumentException("Out of bounds!");
         }
@@ -268,16 +268,20 @@ public class Map implements IMap, ObserverOfMapElements {
     }
 
     private void updateAnimals(){
+        System.out.println("updatetheposition: ");
+        System.out.println(updateThePosition);
+        System.out.println(animals);
         for(Animal a : updateThePosition){
-            System.out.println(a.position);
-            System.out.println(a.lastPosition);
-            System.out.println(animals.keySet());
-            System.out.println(animals);
-            System.out.println(animals.get(a.lastPosition));
+//            System.out.println(a.position);
+//            System.out.println(a.lastPosition);
+//            System.out.println(animals.keySet());
+//            System.out.println(animals);
+//            System.out.println(animals.get(a.lastPosition));
             animals.get(a.lastPosition).remove(a);
             place(a);
         }
 
         updateThePosition.clear();
     }
+
 }

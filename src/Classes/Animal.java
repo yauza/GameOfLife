@@ -16,6 +16,7 @@ public class Animal implements MapElement, MapElementObservable, Comparable<Anim
 
     public Animal(Vector2d position, double energy, Map map){
         this.position = position;
+        this.lastPosition = position;
         this.energy = energy;
         this.genes = new Genes();
         this.direction = genes.calculateDirection();
@@ -24,18 +25,21 @@ public class Animal implements MapElement, MapElementObservable, Comparable<Anim
     }
 
     public String toString(){
-        return position.toString() + " energy: " + energy;
+        return "now: " + position.toString() +" last: " + lastPosition.toString() + " energy: " + energy;
     }
 
 
     @Override
-    public void moveElement(Vector2d dir) {
+    public void moveElement(Vector2d dir, boolean outOfBounds) {
         Vector2d lastPos = new Vector2d(this.position.x, this.position.y);
-//        this.lastPosition.x = this.position.x;
-//        this.lastPosition.y = this.position.y;
         this.lastPosition = lastPos;
-        this.position.x += dir.x;
-        this.position.y += dir.y;
+
+        if(outOfBounds){
+            this.position = new Vector2d(dir);
+        }else {
+            this.position.x += dir.x;
+            this.position.y += dir.y;
+        }
         notifyObserver(this.map);
     }
 

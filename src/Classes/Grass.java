@@ -12,7 +12,7 @@ public class Grass implements MapElement {
     }
 
     @Override
-    public void moveElement(Vector2d dir) {
+    public void moveElement(Vector2d dir, boolean outOfBounds) {
 
     }
 
