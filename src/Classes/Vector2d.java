@@ -13,6 +13,11 @@ public class Vector2d {
         this.y = y;
     }
 
+    public Vector2d(Vector2d position){
+        this.x = position.x;
+        this.y = position.y;
+    }
+
     public String toString(){
         return "[" + this.x + "," + this.y + "]";
     }

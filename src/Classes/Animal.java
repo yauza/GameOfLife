@@ -3,7 +3,10 @@ package Classes;
 import Enums.*;
 import Interfaces.*;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Random;
 
 public class Animal implements MapElement, MapElementObservable, Comparable<Animal>{
     public Vector2d position;
@@ -16,6 +19,7 @@ public class Animal implements MapElement, MapElementObservable, Comparable<Anim
 
     public Animal(Vector2d position, double energy, Map map){
         this.position = position;
+        this.lastPosition = position;
         this.energy = energy;
         this.genes = new Genes();
         this.direction = genes.calculateDirection();
@@ -23,20 +27,83 @@ public class Animal implements MapElement, MapElementObservable, Comparable<Anim
         this.map = map;
     }
 
+    public Animal(Vector2d position, double energy, Map map, Genes genes){
+        this.position = position;
+        this.lastPosition = position;
+        this.energy = energy;
+        this.genes = genes;
+        this.direction = genes.calculateDirection();
+        this.numberOfChildren = 0;
+        this.map = map;
+    }
+
     public String toString(){
-        return position.toString() + " energy: " + energy;
+        return "now: " + position.toString() +" last: " + lastPosition.toString() + " energy: " + energy;
     }
 
 
     @Override
-    public void moveElement(Vector2d dir) {
+    public void moveElement(Vector2d dir, boolean outOfBounds) {
         Vector2d lastPos = new Vector2d(this.position.x, this.position.y);
-//        this.lastPosition.x = this.position.x;
-//        this.lastPosition.y = this.position.y;
         this.lastPosition = lastPos;
-        this.position.x += dir.x;
-        this.position.y += dir.y;
+
+        if(outOfBounds){
+            this.position = new Vector2d(dir);
+        }else {
+            this.position.x += dir.x;
+            this.position.y += dir.y;
+        }
         notifyObserver(this.map);
+    }
+
+    public Genes calculateChildDna(Animal parent2){
+        Genes childGenes = new Genes();
+        Random generator = new Random();
+
+        int div1 = Math.abs(generator.nextInt()) % 32;
+        int div2 = Math.abs(generator.nextInt()) % 32;
+
+        while(div1 == div2) div2 = Math.abs(generator.nextInt()) % 32;
+
+        if(div1 > div2){
+            int temp = div1;
+            div2 = div1;
+            div1 = temp;
+        }
+
+        int [] newDna = new int[32];
+        int i = 0;
+        while (i < 32){
+            if(i < div1){
+                newDna[i] = this.genes.dna[i];
+            }else if (i >= div1 && i < div2){
+                newDna[i] = parent2.genes.dna[i];
+            }else{
+                newDna[i] = this.genes.dna[i];
+            }
+            i++;
+        }
+
+        while(!childGenes.checkIfContainsAllDnaParts(newDna)){
+            int [] temp = new int[8];
+
+            for(int d : newDna){
+                temp[d]++;
+            }
+            int dnaPart = 0;
+            for(int k = 0; k < 8; k++){
+                if(temp[k] == 0) dnaPart = k;
+            }
+
+            int change = Math.abs(generator.nextInt()) % 32;
+
+            newDna[change] = dnaPart;
+
+        }
+
+        Arrays.sort(newDna);
+        childGenes.dna = newDna;
+        return childGenes;
     }
 
 
