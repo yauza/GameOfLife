@@ -35,9 +35,6 @@ public class Genes {
         return dir.fromNumber(this.dna[rand]);
     }
 
-    public Genes calculateChildDna(Animal parent2){
-        return null;
-    }
 
 //    private void fixTheDna(int [] dnaToFix){
 //        int [] dnaParts = new int[8];
@@ -57,7 +54,7 @@ public class Genes {
 //
 //    }
 
-    private boolean checkIfContainsAllDnaParts(int [] dna){
+    public boolean checkIfContainsAllDnaParts(int [] dna){
         if(dna == null) return false;
 
         int [] dnaParts = new int[8];

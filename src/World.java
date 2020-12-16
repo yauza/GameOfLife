@@ -10,10 +10,10 @@ public class World {
         try{
             HashMap<Vector2d, List<Animal>> animals = new HashMap<>();
             HashMap<Vector2d, Grass> grass = new HashMap<>();
-            Map map = new Map(10, 10, 5, 5, animals, grass, 10,2);
-            map.randomlyPlaceAnimals(3);
+            Map map = new Map(10, 10, 5, 5, animals, grass, 10,1);
+            map.randomlyPlaceAnimals(5);
 
-            int era = 5;
+            int era = 10;
 
             while(era > 0){
 //                System.out.println(map.animals.keySet());

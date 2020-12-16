@@ -68,6 +68,7 @@ public class Map implements IMap, ObserverOfMapElements {
             }
         }
 
+        System.out.println(countAnimals());
     }
 
     public void NewEra(){
@@ -76,10 +77,8 @@ public class Map implements IMap, ObserverOfMapElements {
         addGrass();
         moveAnimals();
         updateAnimals();
-//        for(Grass g : grass.values()){
-//            eatGrass(g.getPosition());
-//        }
-        // reproduce
+        eatGrass();
+        animalReproduce();
         // visualize
     }
 
@@ -122,25 +121,41 @@ public class Map implements IMap, ObserverOfMapElements {
         }
     }
 
-    private void eatGrass(Vector2d position){
-        if(animals.get(position).size() == 1){
-            animals.get(position).get(0).energy += grass.get(position).energy;
-        }else if (animals.get(position).size() > 1){
-            //List<Animal> temp = animals.get(position);
-            Collections.sort(animals.get(position));
-            int counter = 0;
-            for(int i = 0; i < animals.get(position).size(); i++){
-                if(animals.get(position).get(i).energy == animals.get(position).get(0).energy) counter++;
-            }
-
-            double energyGet = grass.get(position).energy / counter;
-            for(int i = 0; i < counter; i++){
-                animals.get(position).get(i).energy += energyGet;
-            }
-
+    private void eatGrass(){
+        List<Grass> toRemove = new ArrayList<>();
+        for(Grass g : grass.values()){
+            if(eatSingleGrass(g.getPosition())) toRemove.add(g);
         }
 
-        grass.remove(position);
+        for(Grass g : toRemove){
+            grass.remove(g.position);
+        }
+    }
+
+    private boolean eatSingleGrass(Vector2d position){
+        if(isOccupied(position)) {
+            if (animals.get(position).size() == 1) {
+                animals.get(position).get(0).energy += grass.get(position).energy;
+                System.out.println(animals.get(position).get(0));
+            } else if (animals.get(position).size() > 1) {
+                //List<Animal> temp = animals.get(position);
+                Collections.sort(animals.get(position));
+                int counter = 0;
+                for (int i = 0; i < animals.get(position).size(); i++) {
+                    if (animals.get(position).get(i).energy == animals.get(position).get(0).energy) counter++;
+                }
+
+                double energyGet = grass.get(position).energy / counter;
+                for (int i = 0; i < counter; i++) {
+                    animals.get(position).get(i).energy += energyGet;
+                }
+
+            }
+
+            //grass.remove(position);
+            return true;
+        }
+        return false;
     }
 
     private void addGrass(){
@@ -169,6 +184,7 @@ public class Map implements IMap, ObserverOfMapElements {
     }
 
     private void animalReproduce(){
+        List<Animal> toAdd = new ArrayList<>();
         for(Vector2d pos : animals.keySet()){
             if(howManyOnField(pos) > 1){
                 Collections.sort(animals.get(pos));
@@ -181,9 +197,47 @@ public class Map implements IMap, ObserverOfMapElements {
                 double temp2 = parent2.energy / 4;
                 parent1.energy -= temp1;
                 parent2.energy -= temp2;
-                // get genes
+
+
+                Vector2d childPosition = calculateChildPosition(parent1.position);
+                Genes childGenes = parent1.calculateChildDna(parent2);
+                Animal child = new Animal(childPosition, temp1 + temp2, this, childGenes);
+
+                toAdd.add(child);
             }
         }
+
+        for(Animal a : toAdd){
+            place(a);
+        }
+    }
+
+    private Vector2d calculateChildPosition(Vector2d parentPosition){
+        List<Vector2d> dir = new ArrayList<>();
+        dir.add(new Vector2d(0, 1));
+        dir.add(new Vector2d(1, 1));
+        dir.add(new Vector2d(1, 0));
+        dir.add(new Vector2d(1, -1));
+        dir.add(new Vector2d(0, -1));
+        dir.add(new Vector2d(-1, -1));
+        dir.add(new Vector2d(-1, 0));
+        dir.add(new Vector2d(-1, 1));
+
+        for(Vector2d d : dir){
+            Vector2d childPos = new Vector2d(parentPosition.vectorAddition(d));
+            if(outOfBounds(childPos)) childPos = wrapAroundTheMap(childPos);
+
+            if(isOccupied(childPos) || isGrassOnField(childPos)) continue;
+            else return childPos;
+        }
+
+        Random generator = new Random();
+        int p = Math.abs(generator.nextInt()) % 8;
+
+        Vector2d childPos = new Vector2d(parentPosition.vectorAddition(dir.get(p)));
+        if(outOfBounds(childPos)) childPos = wrapAroundTheMap(childPos);
+
+        return childPos;
     }
 
     @Override
@@ -233,6 +287,15 @@ public class Map implements IMap, ObserverOfMapElements {
         return new Vector2d(x, y);
     }
 
+    private int countAnimals(){
+        int counter = 0;
+        for(List<Animal> l : animals.values()){
+            counter += l.size();
+        }
+
+        return counter;
+    }
+
     private boolean outOfBounds(Vector2d position){
         return (position.x < 0 || position.x >= width || position.y < 0 || position.y >= length);
     }
@@ -244,7 +307,7 @@ public class Map implements IMap, ObserverOfMapElements {
 
     @Override
     public boolean isOccupied(Vector2d position) {
-        if(animals.get(position) != null) return animals.get(position).size() > 1;
+        if(animals.get(position) != null) return animals.get(position).size() >= 1;
         else return false;
     }
 
@@ -268,15 +331,10 @@ public class Map implements IMap, ObserverOfMapElements {
     }
 
     private void updateAnimals(){
-        System.out.println("updatetheposition: ");
-        System.out.println(updateThePosition);
-        System.out.println(animals);
+//        System.out.println("updatetheposition: ");
+//        System.out.println(updateThePosition);
+//        System.out.println(animals);
         for(Animal a : updateThePosition){
-//            System.out.println(a.position);
-//            System.out.println(a.lastPosition);
-//            System.out.println(animals.keySet());
-//            System.out.println(animals);
-//            System.out.println(animals.get(a.lastPosition));
             animals.get(a.lastPosition).remove(a);
             place(a);
         }
