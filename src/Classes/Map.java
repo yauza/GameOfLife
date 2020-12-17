@@ -71,7 +71,7 @@ public class Map implements IMap, ObserverOfMapElements {
         System.out.println(countAnimals());
     }
 
-    public void NewEra(){
+    public void newEra(){
         updateEnergy();
         removeDeadAnimals();
         addGrass();
@@ -191,7 +191,7 @@ public class Map implements IMap, ObserverOfMapElements {
                 Animal parent1 = animals.get(pos).get(0);
                 Animal parent2 = animals.get(pos).get(1);
 
-                if(parent2.energy < energyNeeded/2) continue;      // minimal needed energy to reproduce
+                if(parent2.energy < (startEnergy/2)) continue;      // minimal needed energy to reproduce
 
                 double temp1 = parent1.energy / 4;
                 double temp2 = parent2.energy / 4;

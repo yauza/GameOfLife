@@ -1,5 +1,8 @@
 import Classes.*;
+import Visualizer.MapVisualizer;
+import Visualizer.StartMenu;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,10 +23,13 @@ public class World {
 //                System.out.println(map.animals.values());
                 map.fillTheMap();
                 System.out.println(map.toString());
-                map.NewEra();
+                map.newEra();
                 era--;
                 System.out.println("---------------------------------------------------------------------------------------------");
             }
+
+            StartMenu menu = new StartMenu();
+
 
 
         }catch (IllegalArgumentException exception){
