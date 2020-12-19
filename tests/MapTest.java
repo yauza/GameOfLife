@@ -17,7 +17,7 @@ class MapTest {
     void fillTheMap() {
         HashMap<Vector2d, List<Animal>> animals = new HashMap<>();
         HashMap<Vector2d, Grass> grass = new HashMap<>();
-        Map map = new Map(10, 10, 5, 5, animals, grass, 10,1);
+        Map map = new Map(10, 10, 5, 5, animals, grass, 10,1, 5);
 
         map.place(new Animal(new Vector2d(2, 3), 10, map));
         map.place(new Grass(new Vector2d(4, 7), 10));
@@ -31,7 +31,7 @@ class MapTest {
     void place() {
         HashMap<Vector2d, List<Animal>> animals = new HashMap<>();
         HashMap<Vector2d, Grass> grass = new HashMap<>();
-        Map map = new Map(10, 10, 5, 5, animals, grass, 10,1);
+        Map map = new Map(10, 10, 5, 5, animals, grass, 10,1, 5);
         Animal a1 = new Animal(new Vector2d(2, 3), 10, map);
         Animal a2 = new Animal(new Vector2d(2, 5), 10, map);
         map.place(a1);
@@ -45,7 +45,7 @@ class MapTest {
     void newEra(){
         HashMap<Vector2d, List<Animal>> animals = new HashMap<>();
         HashMap<Vector2d, Grass> grass = new HashMap<>();
-        Map map = new Map(10, 10, 5, 5, animals, grass, 10,1);
+        Map map = new Map(10, 10, 5, 5, animals, grass, 10,1, 5);
         Animal a1 = new Animal(new Vector2d(2, 3), 10, map);
         Animal a2 = new Animal(new Vector2d(2, 5), 10, map);
 

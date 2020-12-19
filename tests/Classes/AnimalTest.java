@@ -13,7 +13,7 @@ class AnimalTest {
     void moveElement() {
         HashMap<Vector2d, List<Animal>> animals = new HashMap<>();
         HashMap<Vector2d, Grass> grass = new HashMap<>();
-        Map map = new Map(10, 10, 5, 5, animals, grass, 10,1);
+        Map map = new Map(10, 10, 5, 5, animals, grass, 10,1,5);
         Animal a1 = new Animal(new Vector2d(2, 3), 10, map);
         Animal a2 = new Animal(new Vector2d(0, 0), 10, map);
 
@@ -28,7 +28,7 @@ class AnimalTest {
     void isDead() {
         HashMap<Vector2d, List<Animal>> animals = new HashMap<>();
         HashMap<Vector2d, Grass> grass = new HashMap<>();
-        Map map = new Map(10, 10, 5, 5, animals, grass, 10,1);
+        Map map = new Map(10, 10, 5, 5, animals, grass, 10,1,5);
         Animal a1 = new Animal(new Vector2d(2, 3), 10, map);
         Animal a2 = new Animal(new Vector2d(0, 0), 0, map);
         Animal a3 = new Animal(new Vector2d(0, 0), -0.2, map);
