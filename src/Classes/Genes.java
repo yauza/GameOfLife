@@ -11,6 +11,12 @@ public class Genes {
         dna = generateRandomDNA();
     }
 
+    public String toString(){
+        String res = "";
+        for(int i : dna) res += i;
+        return res;
+    }
+
     private int [] generateRandomDNA(){
         int [] res = new int[32];
         Random generator = new Random();

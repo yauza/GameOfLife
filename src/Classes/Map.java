@@ -14,17 +14,25 @@ public class Map implements IMap, ObserverOfMapElements {
     public int jungleLength;
     public double startEnergy;
     public double energyNeeded;
-    public double grassEnergy = 10;
+    public double grassEnergy;
     public String[][] area;
+
+    // used in visualization
+    public int era;
+    public int numberOfAnimals;
+    public int numberOfGrass;
+    public int averageNumberOfChildren;
+    public int averageEnergyLevel;
+    public int averageLongevity;
+    public String dominatingGenotype;
 
 
     public HashMap<Vector2d, List<Animal>> animals;
-    //public List<Animal> animals;
     public HashMap<Vector2d, Grass> grass;
-    //public List<Grass> grass;
     public List<Animal> updateThePosition = new ArrayList<>();
+    public List<Animal> dead = new ArrayList<>();
 
-    public Map(int width, int length, int jungleWidth, int jungleLength, HashMap<Vector2d, List<Animal>> animals, HashMap<Vector2d, Grass> grass, double startEnergy, double energyNeeded){
+    public Map(int width, int length, int jungleWidth, int jungleLength, HashMap<Vector2d, List<Animal>> animals, HashMap<Vector2d, Grass> grass, double startEnergy, double energyNeeded, double grassEnergy){
         this.width = width;
         this.length = length;
         this.jungleLength = jungleLength;
@@ -33,8 +41,37 @@ public class Map implements IMap, ObserverOfMapElements {
         this.animals = animals;
         this.grass = grass;
         fillTheMap();
+        this.era = 1;
         this.startEnergy = startEnergy;
         this.energyNeeded = energyNeeded;
+        this.grassEnergy = grassEnergy;
+        this.numberOfAnimals = countAnimals();
+        this.numberOfGrass = countGrass();
+        this.averageNumberOfChildren = calculateAverageNumberOfChildren();
+        this.averageEnergyLevel = calculateAverageEnergyLevel();
+        this.dominatingGenotype = findDominatingGenotype();
+        this.averageLongevity = calculateAverageLongevity();
+    }
+
+    public Map(int width, int length, int jungleWidth, int jungleLength, double startEnergy, double energyNeeded, double grassEnergy){
+        this.width = width;
+        this.length = length;
+        this.jungleLength = jungleLength;
+        this.jungleWidth = jungleWidth;
+        this.area = new String[length][width];
+        this.animals = new HashMap<>();
+        this.grass = new HashMap<>();
+        fillTheMap();
+        this.era = 1;
+        this.startEnergy = startEnergy;
+        this.energyNeeded = energyNeeded;
+        this.grassEnergy = grassEnergy;
+        this.numberOfAnimals = countAnimals();
+        this.numberOfGrass = countGrass();
+        this.averageNumberOfChildren = calculateAverageNumberOfChildren();
+        this.averageEnergyLevel = calculateAverageEnergyLevel();
+        this.dominatingGenotype = findDominatingGenotype();
+        this.averageLongevity = calculateAverageLongevity();
     }
 
     public String toString(){
@@ -68,10 +105,10 @@ public class Map implements IMap, ObserverOfMapElements {
             }
         }
 
-        System.out.println(countAnimals());
+        //System.out.println(countAnimals());
     }
 
-    public void NewEra(){
+    public void newEra(){
         updateEnergy();
         removeDeadAnimals();
         addGrass();
@@ -79,17 +116,25 @@ public class Map implements IMap, ObserverOfMapElements {
         updateAnimals();
         eatGrass();
         animalReproduce();
+        this.era++;
+        this.numberOfAnimals = countAnimals();
+        this.numberOfGrass = countGrass();
+        this.averageNumberOfChildren = calculateAverageNumberOfChildren();
+        this.averageEnergyLevel = calculateAverageEnergyLevel();
+        this.dominatingGenotype = findDominatingGenotype();
+        this.averageLongevity = calculateAverageLongevity();
         // visualize
     }
 
-    private void removeDeadAnimals(){
+    private void removeDeadAnimals(){              //and update longevity
         List<Animal> toRemove = new ArrayList<>();
 
         for(List<Animal> l : animals.values()){
             for(Animal a : l){
                 if(a.isDead()){
+                    dead.add(a);
                     toRemove.add(a);
-                }
+                }else a.longevity++;
             }
         }
 
@@ -136,7 +181,7 @@ public class Map implements IMap, ObserverOfMapElements {
         if(isOccupied(position)) {
             if (animals.get(position).size() == 1) {
                 animals.get(position).get(0).energy += grass.get(position).energy;
-                System.out.println(animals.get(position).get(0));
+                //System.out.println(animals.get(position).get(0));
             } else if (animals.get(position).size() > 1) {
                 //List<Animal> temp = animals.get(position);
                 Collections.sort(animals.get(position));
@@ -166,20 +211,22 @@ public class Map implements IMap, ObserverOfMapElements {
         int x1 = Math.abs(generator.nextInt()) % jungleWidth + boundx;
         int y1 = Math.abs(generator.nextInt()) % jungleLength + boundy;
 
-
         grass.put(new Vector2d(x1, y1), new Grass(new Vector2d(x1, y1), grassEnergy));
 
         int x2 = Math.abs(generator.nextInt()) % boundx;
-        int x3 = Math.abs(generator.nextInt()) % boundx + jungleWidth;
-        int y2 = Math.abs(generator.nextInt()) % boundy;
-        int y3 = Math.abs(generator.nextInt()) % boundy + jungleLength;
+        int x3 = (Math.abs(generator.nextInt()) % boundx) + jungleWidth + boundx;
+        int x4 = Math.abs(generator.nextInt()) % width;
 
-        if(generator.nextBoolean()){
-            if(generator.nextBoolean()) grass.put(new Vector2d(x2, y2), new Grass(new Vector2d(x2, y2), grassEnergy));
-            else grass.put(new Vector2d(x2, y3), new Grass(new Vector2d(x2, y3), grassEnergy));
-        }else{
-            if(generator.nextBoolean()) grass.put(new Vector2d(x3, y2), new Grass(new Vector2d(x3, y2), grassEnergy));
-            else grass.put(new Vector2d(x3, y3), new Grass(new Vector2d(x3, y3), grassEnergy));
+        int y2 = Math.abs(generator.nextInt()) % boundy;
+        int y3 = (Math.abs(generator.nextInt()) % boundy) + jungleLength + boundy;
+        int y4 = Math.abs(generator.nextInt()) % length;
+
+        if(generator.nextBoolean()){  //horizontal
+            if(generator.nextBoolean()) grass.put(new Vector2d(x4, y2), new Grass(new Vector2d(x4, y2), grassEnergy));
+            else grass.put(new Vector2d(x4, y3), new Grass(new Vector2d(x4, y3), grassEnergy));
+        }else{                        // vertical
+            if(generator.nextBoolean()) grass.put(new Vector2d(x2, y4), new Grass(new Vector2d(x2, y4), grassEnergy));
+            else grass.put(new Vector2d(x3, y4), new Grass(new Vector2d(x3, y4), grassEnergy));
         }
     }
 
@@ -191,13 +238,15 @@ public class Map implements IMap, ObserverOfMapElements {
                 Animal parent1 = animals.get(pos).get(0);
                 Animal parent2 = animals.get(pos).get(1);
 
-                if(parent2.energy < energyNeeded/2) continue;      // minimal needed energy to reproduce
+                if(parent2.energy < (startEnergy/2)) continue;      // minimal needed energy to reproduce
 
                 double temp1 = parent1.energy / 4;
                 double temp2 = parent2.energy / 4;
                 parent1.energy -= temp1;
                 parent2.energy -= temp2;
 
+                parent1.numberOfChildren++;
+                parent2.numberOfChildren++;
 
                 Vector2d childPosition = calculateChildPosition(parent1.position);
                 Genes childGenes = parent1.calculateChildDna(parent2);
@@ -269,7 +318,7 @@ public class Map implements IMap, ObserverOfMapElements {
         for(int i = 0; i < numberOfAnimals; i++){
             int x = Math.abs(generator.nextInt()) % width;
             int y = Math.abs(generator.nextInt()) % length;
-            System.out.println(new Vector2d(x, y));
+            //System.out.println(new Vector2d(x, y));
             Animal a = new Animal(new Vector2d(x, y), startEnergy, this);
             place(a);
         }
@@ -289,11 +338,79 @@ public class Map implements IMap, ObserverOfMapElements {
 
     private int countAnimals(){
         int counter = 0;
+        if(animals.values() == null) return 0;
         for(List<Animal> l : animals.values()){
+            if(l == null) continue;
             counter += l.size();
         }
 
         return counter;
+    }
+
+    private int countGrass(){
+        return grass.values().size();
+    }
+
+    private int calculateAverageLongevity(){
+        int counter = 0, div = 0;
+        for(Animal a : dead){
+            counter += a.longevity;
+            div++;
+        }
+
+        dead.clear();
+        if(div == 0) return 0;
+        return counter / div;
+    }
+
+    private int calculateAverageNumberOfChildren(){
+        int counter = 0, div = 0;
+        if(animals.values() == null) return 0;
+        for(List<Animal> l : animals.values()){
+            if(l == null) continue;
+            for(Animal a : l){
+                counter += a.numberOfChildren;
+            }
+            div += l.size();
+        }
+        if(div == 0) return 0;
+        return counter / div;
+    }
+
+    private int calculateAverageEnergyLevel(){
+        int counter = 0, div = 0;
+        if(animals.values() == null) return 0;
+        for(List<Animal> l : animals.values()){
+            if(l == null) continue;
+            for(Animal a : l){
+                counter += a.energy;
+            }
+            div += l.size();
+        }
+        if(div == 0) return 0;
+        return counter / div;
+    }
+
+    private String findDominatingGenotype(){
+        int counter = 0;
+        HashMap<int [], Integer> dnaMap = new HashMap<>();
+
+        if(animals.values() == null) return "";
+        for(List<Animal> l : animals.values()){
+            if(l == null) continue;
+            for(Animal a : l){
+                dnaMap.put(a.genes.dna, 1);
+            }
+        }
+        Genes temp = new Genes();
+        for(int[] g : dnaMap.keySet()){
+            if(dnaMap.get(g) > counter){
+                temp.dna = g;
+                counter = dnaMap.get(g);
+            }
+        }
+
+        return temp.toString();
     }
 
     private boolean outOfBounds(Vector2d position){
