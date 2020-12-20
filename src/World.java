@@ -2,7 +2,10 @@ import Classes.*;
 import Visualizer.MapVisualizer;
 import Visualizer.StartMenu;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

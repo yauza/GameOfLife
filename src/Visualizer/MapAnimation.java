@@ -2,10 +2,14 @@ package Visualizer;
 
 import Classes.Map;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
 import java.util.List;
 import Classes.*;
@@ -18,6 +22,10 @@ public class MapAnimation extends JPanel{ //implements ActionListener{
 
     public String DG;
 
+    private Image high;
+    private Image mid;
+    private Image low;
+
     //Timer tm = new Timer(50, mapVisualizer);//this);
 
 
@@ -26,6 +34,15 @@ public class MapAnimation extends JPanel{ //implements ActionListener{
         this.mapVisualizer = mapVisualizer;
         this.pause = false;
         this.showDG = false;
+
+
+        try {
+            high = ImageIO.read(getClass().getResource("/Images/highEnergy.png"));
+            mid = ImageIO.read(getClass().getResource("/Images/midEnergy.png"));
+            low = ImageIO.read(getClass().getResource("/Images/lowEnergy.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void paintComponent(Graphics g){
@@ -37,12 +54,12 @@ public class MapAnimation extends JPanel{ //implements ActionListener{
         int hs = height / map.length;
 
         // ---------------------------Background-----------------------------------
-        g.setColor(new Color(220, 189, 51));
+        g.setColor(new Color(253, 253, 144));
         g.fillRect(0, 0, width, height);
 
         // ---------------------------Jungle---------------------------------------
         int jungleX = (width - map.jungleWidth * ws) / 2, jungleY = (width - map.jungleLength * hs) / 2;;
-        g.setColor(new Color(66, 168, 34));
+        g.setColor(new Color(55, 165, 13, 149));
         g.fillRect(jungleX, jungleY, map.jungleWidth * ws, map.jungleLength * hs);
 
         // ---------------------------Grass----------------------------------------
@@ -54,8 +71,17 @@ public class MapAnimation extends JPanel{ //implements ActionListener{
         // ---------------------------Animals--------------------------------------
         for(List<Animal> l : map.animals.values()){
             for(Animal animal : l){
-                g.setColor(new Color(255, 0, 58));
-                g.fillRect(animal.position.x * ws, animal.position.y * hs, ws, hs);
+                //g.setColor(new Color(255, 0, 58));
+                //g.fillRect(animal.position.x * ws, animal.position.y * hs, ws, hs);
+                int type = animal.getEnergyLevel(map.startEnergy);
+                if(type == 1) g.drawImage(high, animal.position.x * ws, animal.position.y * hs, ws, hs, this);
+                else if(type == 0) g.drawImage(mid, animal.position.x * ws, animal.position.y * hs, ws, hs, this);
+                else g.drawImage(low, animal.position.x * ws, animal.position.y * hs, ws, hs, this);
+                System.out.println(map.startEnergy);
+                System.out.println(animal.energy);
+                System.out.println(animal.getEnergyLevel(map.startEnergy));
+                //g.drawImage(high, animal.position.x * ws, animal.position.y * hs, ws, hs, this);
+
             }
         }
 
@@ -70,6 +96,8 @@ public class MapAnimation extends JPanel{ //implements ActionListener{
                 }
             }
         }
+
+
 
 
 
