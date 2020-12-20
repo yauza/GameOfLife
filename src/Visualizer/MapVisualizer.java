@@ -9,7 +9,8 @@ import Interfaces.*;
 
 public class MapVisualizer extends JPanel implements ActionListener {
     public Map map;
-    public MapAnimation mapAnimation;
+    public int startAnimals;
+    //public MapAnimation mapAnimation;
 
     Timer tm = new Timer(5, this);
     int x = 0;
@@ -18,44 +19,40 @@ public class MapVisualizer extends JPanel implements ActionListener {
     public JPanel panel;
 
     public MapAnimation ma;
+    public MapStatistics ms;
 
     // buttons
     private JButton pauseButton;
     private JButton resumeButton;
-
-    private JLabel animalsText;
-    private JLabel grassText;
-
-    private JLabel animalsNumber;
-    private JLabel grassNumber;
+    private JButton showDGButton;
 
     private int numberOfAnimals;
     private int numberOfGrass;
 
-    public MapVisualizer(Map map){
+    public MapVisualizer(Map map, int startAnimals){
         this.map = map;
+        this.startAnimals = startAnimals;
 
         simulation = new JFrame("Simulation");
-        //GridLayout layout = new GridLayout(2, 1);
-        //FlowLayout layout = new FlowLayout();
         BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
-        //simulation.setLayout(layout);
 
         panel = new JPanel();
         //panel.setPreferredSize(new Dimension(500, 100));
         panel.setBackground(new Color(0x00FF00FF));
-        //panel.setBounds(0, 0, 500, 100);
+        panel.setBounds(0, 900, 800, 100);
         //simulation.getContentPane();
 
         ma = new MapAnimation(map, this);
-        ma.setSize(new Dimension(600, 600));
+        ma.setSize(new Dimension(800, 800));
 
+        ms = new MapStatistics(map, this);
+        ms.setBounds(0,800,800,100);
 
         // ---------------------------------------------------------
 
         pauseButton = new JButton("Pause");
         Dimension pbsize = pauseButton.getPreferredSize();
-        pauseButton.setBounds(100, 650, pbsize.width, pbsize.height);
+        pauseButton.setBounds(100, 920, pbsize.width, pbsize.height);
         pauseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -65,41 +62,48 @@ public class MapVisualizer extends JPanel implements ActionListener {
 
         resumeButton = new JButton("Resume");
         Dimension rbsize = resumeButton.getPreferredSize();
-        resumeButton.setBounds(96, 700, rbsize.width, rbsize.height);
+        resumeButton.setBounds(296, 920, rbsize.width, rbsize.height);
         resumeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                ma.showDG = false;
                 ma.pause = false;
             }
         });
 
-        // ---------------------------------------------------------
 
-        animalsText = new JLabel("Number of animals: ");
-        Dimension atsize = animalsText.getPreferredSize();
-        animalsText.setBounds(300, 650, atsize.width, atsize.height);
-
-        animalsNumber = new JLabel(Integer.toString(this.numberOfAnimals));
-        Dimension ansize = animalsNumber.getPreferredSize();
-        animalsNumber.setBounds(320 + atsize.width, 650, ansize.width, ansize.height);
+        showDGButton = new JButton("Dominating Genotype");
+        Dimension sbsize = showDGButton.getPreferredSize();
+        showDGButton.setBounds(500, 920, sbsize.width,sbsize.height);
+        showDGButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(ma.pause){
+                    ma.showDG = true;
+                    ma.repaint();
+                }else{
+                    JOptionPane.showMessageDialog(simulation,"The simulation is not paused!");
+                }
+            }
+        });
 
         // ---------------------------------------------------------
 
         panel.setLayout(null);
         panel.add(pauseButton);
         panel.add(resumeButton);
-        panel.add(animalsText);
-        panel.add(animalsNumber);
+        panel.add(showDGButton);
         simulation.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         simulation.add(ma);
+        simulation.add(ms);
         simulation.add(panel);
-        simulation.setSize(600, 800);
+        simulation.setSize(800, 1000);
         simulation.setVisible(true);
 
     }
 
     public void startTheSimulation(){
-        map.randomlyPlaceAnimals(10);
+        map.randomlyPlaceAnimals(startAnimals);
         tm.start();
     }
 
@@ -109,8 +113,10 @@ public class MapVisualizer extends JPanel implements ActionListener {
 //        else if(e.getSource() == resumeButton) ma.pause = false;
         if(!ma.pause) {
             ma.repaint();
+            ms.repaint();
             map.newEra();
         }
+
 
         //x++;
         //repaint();

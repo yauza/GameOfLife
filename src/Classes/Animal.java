@@ -16,6 +16,7 @@ public class Animal implements MapElement, MapElementObservable, Comparable<Anim
     public Genes genes;
     public ObserverOfMapElements map;
     public int numberOfChildren;
+    public int longevity;
 
     public Animal(Vector2d position, double energy, Map map){
         this.position = position;
@@ -25,6 +26,7 @@ public class Animal implements MapElement, MapElementObservable, Comparable<Anim
         this.direction = genes.calculateDirection();
         this.numberOfChildren = 0;
         this.map = map;
+        this.longevity = 0;
     }
 
     public Animal(Vector2d position, double energy, Map map, Genes genes){
@@ -35,6 +37,7 @@ public class Animal implements MapElement, MapElementObservable, Comparable<Anim
         this.direction = genes.calculateDirection();
         this.numberOfChildren = 0;
         this.map = map;
+        this.longevity = 0;
     }
 
     public String toString(){

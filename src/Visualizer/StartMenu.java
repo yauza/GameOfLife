@@ -18,6 +18,7 @@ public class StartMenu extends JPanel implements ActionListener{
     public int moveEnergy;
     public int plantEnergy;
     public int jungleRatio;
+    public int startAnimals;
 
     // menu display - simulation settings
     private JLabel mapWidthLabel;
@@ -37,6 +38,9 @@ public class StartMenu extends JPanel implements ActionListener{
 
     private JLabel jungleRatioLabel;
     private JTextField jungleRatioText;
+
+    private JLabel startAnimalsLabel;
+    private JTextField startAnimalsText;
 
     // start the simulation
     private JButton startButton;
@@ -109,9 +113,19 @@ public class StartMenu extends JPanel implements ActionListener{
 
         // ------------------------------------------------------------
 
+        startAnimalsLabel = new JLabel("Start Animals: ");
+        Dimension size7 = startAnimalsLabel.getPreferredSize();
+        startAnimalsLabel.setBounds(40,380,size7.width,size7.height);
+
+        startAnimalsText = new JTextField(6);
+        Dimension tsize7 = startAnimalsText.getPreferredSize();
+        startAnimalsText.setBounds(140,380,tsize7.width,tsize7.height);
+
+        // ------------------------------------------------------------
+
         startButton = new JButton("Start!");
         Dimension bsize = startButton.getPreferredSize();
-        startButton.setBounds(100, 400, bsize.width, bsize.height);
+        startButton.setBounds(100, 410, bsize.width, bsize.height);
         startButton.addActionListener(this);
 
         // ------------------------------------------------------------
@@ -135,6 +149,9 @@ public class StartMenu extends JPanel implements ActionListener{
         panel.add(jungleRatioLabel);
         panel.add(jungleRatioText);
 
+        panel.add(startAnimalsLabel);
+        panel.add(startAnimalsText);
+
         panel.add(startButton);
 
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -157,10 +174,11 @@ public class StartMenu extends JPanel implements ActionListener{
         moveEnergy = Integer.parseInt(moveEnergyText.getText());
         plantEnergy = Integer.parseInt(plantEnergyText.getText());
         jungleRatio = Integer.parseInt(jungleRatioText.getText());
+        startAnimals = Integer.parseInt(startAnimalsText.getText());
 
         Map map = new Map(mapWidth, mapHeight, mapWidth/jungleRatio, mapHeight/jungleRatio, startEnergy,moveEnergy, plantEnergy);
 //        map.randomlyPlaceAnimals(70);
-        MapVisualizer newSimulation = new MapVisualizer(map);
+        MapVisualizer newSimulation = new MapVisualizer(map, startAnimals);
         newSimulation.startTheSimulation();
 //        MapAnimation ma = new MapAnimation(map, newSimulation);
 //        newSimulation.mapAnimation = ma;
