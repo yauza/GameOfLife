@@ -109,6 +109,13 @@ public class Animal implements MapElement, MapElementObservable, Comparable<Anim
         return childGenes;
     }
 
+    public int getEnergyLevel(double standard){
+        if(this.energy >= (standard / 2)) return 1;
+        else if(this.energy < (standard / 2) && this.energy >= (standard / 4)) return 0;
+        else if(this.energy < (standard / 4)) return -1;
+        return 2;
+    }
+
 
     @Override
     public Vector2d getPosition() {

@@ -393,34 +393,30 @@ public class Map implements IMap, ObserverOfMapElements {
 
     private String findDominatingGenotype(){
         int counter = 0;
-        HashMap<int [], Integer> dnaMap = new HashMap<>();
+        HashMap<String, Integer> dnaMap = new HashMap<>();
 
         if(animals.values() == null) return "";
         for(List<Animal> l : animals.values()){
             if(l == null) continue;
             for(Animal a : l){
-                dnaMap.put(a.genes.dna, 1);
+                dnaMap.put(a.genes.toString(), 1);
             }
         }
-        Genes temp = new Genes();
-        for(int[] g : dnaMap.keySet()){
+        String res = "";
+        for(String g : dnaMap.keySet()){
             if(dnaMap.get(g) > counter){
-                temp.dna = g;
+                res = g;
                 counter = dnaMap.get(g);
             }
         }
 
-        return temp.toString();
+        return res;
     }
 
     private boolean outOfBounds(Vector2d position){
         return (position.x < 0 || position.x >= width || position.y < 0 || position.y >= length);
     }
 
-    @Override
-    public boolean canMoveTo(Vector2d position) {
-        return false;
-    }
 
     @Override
     public boolean isOccupied(Vector2d position) {
@@ -437,10 +433,6 @@ public class Map implements IMap, ObserverOfMapElements {
         else return 0;
     }
 
-    @Override
-    public Object objectAt(Vector2d position) {
-        return null;
-    }
 
     @Override
     public void update(MapElementObservable animal) {

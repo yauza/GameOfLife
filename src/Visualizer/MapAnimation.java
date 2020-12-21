@@ -2,15 +2,22 @@ package Visualizer;
 
 import Classes.Map;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
 import java.util.Random;
 import java.util.List;
 import Classes.*;
 
-public class MapAnimation extends JPanel{ //implements ActionListener{
+public class MapAnimation extends JPanel implements MouseListener { //implements ActionListener{
     public Map map;
     public MapVisualizer mapVisualizer;
     public boolean pause;
@@ -18,7 +25,12 @@ public class MapAnimation extends JPanel{ //implements ActionListener{
 
     public String DG;
 
-    //Timer tm = new Timer(50, mapVisualizer);//this);
+    private Image high;
+    private Image mid;
+    private Image low;
+
+    private int wst;
+    private int hst;
 
 
     public MapAnimation(Map map, MapVisualizer mapVisualizer){
@@ -26,6 +38,16 @@ public class MapAnimation extends JPanel{ //implements ActionListener{
         this.mapVisualizer = mapVisualizer;
         this.pause = false;
         this.showDG = false;
+        addMouseListener(this);
+
+
+        try {
+            high = ImageIO.read(getClass().getResource("/Images/highEnergy.png"));
+            mid = ImageIO.read(getClass().getResource("/Images/midEnergy.png"));
+            low = ImageIO.read(getClass().getResource("/Images/lowEnergy.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void paintComponent(Graphics g){
@@ -33,29 +55,36 @@ public class MapAnimation extends JPanel{ //implements ActionListener{
         super.paintComponent(g);
         Random generator = new Random();
         int width = 800, height = 800;
-        int ws = width / map.width;
-        int hs = height / map.length;
+        int ws = Math.round(width / map.width);
+        int hs = Math.round(height / map.length);
+        wst = ws;
+        hst = hs;
 
         // ---------------------------Background-----------------------------------
-        g.setColor(new Color(220, 189, 51));
+        g.setColor(new Color(253, 253, 144));
         g.fillRect(0, 0, width, height);
 
         // ---------------------------Jungle---------------------------------------
-        int jungleX = (width - map.jungleWidth * ws) / 2, jungleY = (width - map.jungleLength * hs) / 2;;
-        g.setColor(new Color(66, 168, 34));
+        int jungleX = (width - (map.jungleWidth * ws)) / 2, jungleY = (height - (map.jungleLength * hs)) / 2;;
+        g.setColor(new Color(55, 165, 13, 149));
         g.fillRect(jungleX, jungleY, map.jungleWidth * ws, map.jungleLength * hs);
 
         // ---------------------------Grass----------------------------------------
         for(Grass grass : map.grass.values()){
-            g.setColor(new Color(85, 172, 165));
+            g.setColor(new Color(127, 255, 40));
             g.fillRect(grass.position.x * ws, grass.position.y * hs, ws, hs);
         }
 
         // ---------------------------Animals--------------------------------------
         for(List<Animal> l : map.animals.values()){
             for(Animal animal : l){
-                g.setColor(new Color(255, 0, 58));
-                g.fillRect(animal.position.x * ws, animal.position.y * hs, ws, hs);
+                //g.setColor(new Color(255, 0, 58));
+                //g.fillRect(animal.position.x * ws, animal.position.y * hs, ws, hs);
+                int type = animal.getEnergyLevel(map.startEnergy);
+                if(type == 1) g.drawImage(high, animal.position.x * ws, animal.position.y * hs, ws, hs, this);
+                else if(type == 0) g.drawImage(mid, animal.position.x * ws, animal.position.y * hs, ws, hs, this);
+                else g.drawImage(low, animal.position.x * ws, animal.position.y * hs, ws, hs, this);
+
             }
         }
 
@@ -69,22 +98,46 @@ public class MapAnimation extends JPanel{ //implements ActionListener{
                     }
                 }
             }
+
+
+
         }
-
-
-
-            //g.setColor(new Color(0,0,0));
-            //g.drawString("sa " + map.numberOfAnimals, 500, 500);
-            //g.drawString(" a " + map.numberOfGrass, 500, 550);
-            //g.drawString(""+pause, 500, 570);
-            //map.newEra();
-            //tm.start();
 
     }
 
-//    @Override
-//    public void actionPerformed(ActionEvent e) {
-//        repaint();
-//    }
 
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if(pause) {
+            int x = e.getX();
+            int y = e.getY();
+            List<Animal> l = map.animals.get(new Vector2d(x/wst, y/hst));
+            if(l != null) {
+                Collections.sort(l);
+                Animal animal = l.get(0);
+                JOptionPane.showMessageDialog(this, animal.genes.toString(), "Genotype", JOptionPane.PLAIN_MESSAGE);
+            }
+
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
 }

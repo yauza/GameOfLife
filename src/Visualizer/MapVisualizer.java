@@ -1,11 +1,10 @@
 package Visualizer;
+import Classes.Map;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import Classes.*;
-import Enums.*;
-import Interfaces.*;
 
 public class MapVisualizer extends JPanel implements ActionListener {
     public Map map;
@@ -29,6 +28,14 @@ public class MapVisualizer extends JPanel implements ActionListener {
     private int numberOfAnimals;
     private int numberOfGrass;
 
+    // starting the simulation with data from json file
+//    public MapVisualizer(ParametersLoader loader){
+//        Map map = new Map(loader.mapWidth, loader.mapHeight, loader.mapWidth / loader.jungleRatio, loader.mapHeight / loader.jungleRatio, loader.startEnergy, loader.moveEnergy, loader.plantEnergy);
+//        this.map = map;
+//        MapVisualizer sim = new MapVisualizer(map, loader.startAnimals);
+//        sim.startTheSimulation();
+//    }
+
     public MapVisualizer(Map map, int startAnimals){
         this.map = map;
         this.startAnimals = startAnimals;
@@ -37,10 +44,8 @@ public class MapVisualizer extends JPanel implements ActionListener {
         BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
 
         panel = new JPanel();
-        //panel.setPreferredSize(new Dimension(500, 100));
-        panel.setBackground(new Color(0x00FF00FF));
+        panel.setBackground(new Color(125, 169, 203));
         panel.setBounds(0, 900, 800, 100);
-        //simulation.getContentPane();
 
         ma = new MapAnimation(map, this);
         ma.setSize(new Dimension(800, 800));
@@ -98,6 +103,7 @@ public class MapVisualizer extends JPanel implements ActionListener {
         simulation.add(ms);
         simulation.add(panel);
         simulation.setSize(800, 1000);
+        simulation.setPreferredSize(new Dimension(800, 1000));
         simulation.setVisible(true);
 
     }
@@ -109,8 +115,6 @@ public class MapVisualizer extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-//        if(e.getSource() == pauseButton) ma.pause = true;
-//        else if(e.getSource() == resumeButton) ma.pause = false;
         if(!ma.pause) {
             ma.repaint();
             ms.repaint();
@@ -118,7 +122,5 @@ public class MapVisualizer extends JPanel implements ActionListener {
         }
 
 
-        //x++;
-        //repaint();
     }
 }
