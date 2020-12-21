@@ -42,24 +42,6 @@ public class Genes {
     }
 
 
-//    private void fixTheDna(int [] dnaToFix){
-//        int [] dnaParts = new int[8];
-//        for(int i = 0; i < 8; i++) dnaParts[i] = 0;
-//        for(int i : dna){
-//            dnaParts[i]++;
-//        }
-//
-//        int num, change = 0;
-//        for(int i = 0; i < 8; i++) {
-//            if(dnaParts[i] == 0){
-//                num = i;
-//            }
-//            change = Math.max(dnaParts[i], change);
-//        }
-//
-//
-//    }
-
     public boolean checkIfContainsAllDnaParts(int [] dna){
         if(dna == null) return false;
 

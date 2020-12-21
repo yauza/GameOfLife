@@ -186,9 +186,7 @@ public class MapAnimation extends JPanel implements MouseListener { //implements
                 popupPanel.add(typeNText);
                 popupPanel.add(followButton);
                 test.add(popupPanel);
-                Object [] options = {"elo", "puap", "a"};
 
-                //JOptionPane.showMessageDialog(null, popupPanel);
                 test.setSize(400, 300);
                 test.setVisible(true);
             }
