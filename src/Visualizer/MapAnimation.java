@@ -55,17 +55,22 @@ public class MapAnimation extends JPanel implements MouseListener { //implements
         super.paintComponent(g);
         Random generator = new Random();
         int width = 800, height = 800;
+        int mWidth = map.width, mHeight = map.length;
         int ws = Math.round(width / map.width);
         int hs = Math.round(height / map.length);
         wst = ws;
         hst = hs;
 
         // ---------------------------Background-----------------------------------
-        g.setColor(new Color(253, 253, 144));
+        g.setColor(new Color(189, 217, 207));
         g.fillRect(0, 0, width, height);
 
+        // ---------------------------Steppe---------------------------------------
+        g.setColor(new Color(253, 253, 144));
+        g.fillRect(0, 0, mWidth * ws, mHeight * hs);
+
         // ---------------------------Jungle---------------------------------------
-        int jungleX = (width - (map.jungleWidth * ws)) / 2, jungleY = (height - (map.jungleLength * hs)) / 2;;
+        int jungleX = (mWidth*ws - (map.jungleWidth * ws)) / 2, jungleY = (mHeight*hs - (map.jungleLength * hs)) / 2;;
         g.setColor(new Color(55, 165, 13, 149));
         g.fillRect(jungleX, jungleY, map.jungleWidth * ws, map.jungleLength * hs);
 
@@ -115,7 +120,7 @@ public class MapAnimation extends JPanel implements MouseListener { //implements
             if(l != null) {
                 Collections.sort(l);
                 Animal animal = l.get(0);
-                JOptionPane.showMessageDialog(this, animal.genes.toString(), "Genotype", JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Genotype: " + animal.genes.toString(), "Animal details:", JOptionPane.PLAIN_MESSAGE);
             }
 
         }

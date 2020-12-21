@@ -399,7 +399,9 @@ public class Map implements IMap, ObserverOfMapElements {
         for(List<Animal> l : animals.values()){
             if(l == null) continue;
             for(Animal a : l){
-                dnaMap.put(a.genes.toString(), 1);
+                String dna = a.genes.toString();
+                if(dnaMap.containsKey(dna)) dnaMap.replace(dna, dnaMap.get(dna) + 1);
+                else dnaMap.put(dna, 1);
             }
         }
         String res = "";

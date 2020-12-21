@@ -1,4 +1,5 @@
 import Classes.*;
+import Visualizer.FileCreator;
 import Visualizer.MapVisualizer;
 import Visualizer.ParametersLoader;
 import Visualizer.StartMenu;
@@ -40,7 +41,10 @@ public class World {
             loader.loadParameters();
             StartMenu menu = new StartMenu();
             menu.setParameters(loader);
-
+//            String [] data = {"100", "20", "30", "50", "40", "23", "90"};
+//
+//            FileCreator test = new FileCreator(data);
+//            test.createFileWithStats();
 
 
         }catch (IllegalArgumentException exception){
