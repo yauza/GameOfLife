@@ -464,9 +464,6 @@ public class Map implements IMap, ObserverOfMapElements {
     }
 
     private void updateAnimals(){
-//        System.out.println("updatetheposition: ");
-//        System.out.println(updateThePosition);
-//        System.out.println(animals);
         for(Animal a : updateThePosition){
             animals.get(a.lastPosition).remove(a);
             place(a);
