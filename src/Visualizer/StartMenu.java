@@ -162,11 +162,19 @@ public class StartMenu extends JPanel implements ActionListener{
         menu.setVisible(true);
     }
 
+    // starting the simulation with parameters from a json file
+    public void setParameters(ParametersLoader loader){
+        this.mapWidthText.setText(Integer.toString(loader.mapWidth));
+        this.mapHeightText.setText(Integer.toString(loader.mapHeight));
+        this.startEnergyText.setText(Integer.toString(loader.startEnergy));
+        this.moveEnergyText.setText(Integer.toString(loader.moveEnergy));
+        this.plantEnergyText.setText(Integer.toString(loader.plantEnergy));
+        this.jungleRatioText.setText(Integer.toString(loader.jungleRatio));
+        this.startAnimalsText.setText(Integer.toString(loader.startAnimals));
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        //JOptionPane.showMessageDialog(menu, "a");
-//        HashMap<Vector2d, java.util.List<Animal>> animals = new HashMap<>();
-//        HashMap<Vector2d, Grass> grass = new HashMap<>();
 
         mapWidth = Integer.parseInt(mapWidthText.getText());
         mapHeight = Integer.parseInt(mapHeightText.getText());
@@ -176,15 +184,27 @@ public class StartMenu extends JPanel implements ActionListener{
         jungleRatio = Integer.parseInt(jungleRatioText.getText());
         startAnimals = Integer.parseInt(startAnimalsText.getText());
 
-        Map map = new Map(mapWidth, mapHeight, mapWidth/jungleRatio, mapHeight/jungleRatio, startEnergy,moveEnergy, plantEnergy);
-//        map.randomlyPlaceAnimals(70);
-        MapVisualizer newSimulation = new MapVisualizer(map, startAnimals);
-        newSimulation.startTheSimulation();
-//        MapAnimation ma = new MapAnimation(map, newSimulation);
-//        newSimulation.mapAnimation = ma;
+        if(checkTheValues()) {
+            Map map = new Map(mapWidth, mapHeight, mapWidth / jungleRatio, mapHeight / jungleRatio, startEnergy, moveEnergy, plantEnergy);
+            MapVisualizer newSimulation = new MapVisualizer(map, startAnimals);
+            newSimulation.startTheSimulation();
+        }
     }
 
     private boolean checkTheValues(){
-        return false;
+        if(mapWidth <= 2 || mapWidth > 800){
+            JOptionPane.showMessageDialog(this,"Wrong map width value!", "Wrong value", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if(mapHeight <= 2 || mapHeight > 800){
+            JOptionPane.showMessageDialog(this,"Wrong map height value!", "Wrong value", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if(jungleRatio <= 0 || jungleRatio > Math.min(mapHeight, mapWidth)){
+            JOptionPane.showMessageDialog(this,"Wrong jungle ratio value!", "Wrong value", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+
     }
 }

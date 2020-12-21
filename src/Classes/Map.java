@@ -417,10 +417,6 @@ public class Map implements IMap, ObserverOfMapElements {
         return (position.x < 0 || position.x >= width || position.y < 0 || position.y >= length);
     }
 
-    @Override
-    public boolean canMoveTo(Vector2d position) {
-        return false;
-    }
 
     @Override
     public boolean isOccupied(Vector2d position) {
@@ -437,10 +433,6 @@ public class Map implements IMap, ObserverOfMapElements {
         else return 0;
     }
 
-    @Override
-    public Object objectAt(Vector2d position) {
-        return null;
-    }
 
     @Override
     public void update(MapElementObservable animal) {
