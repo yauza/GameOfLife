@@ -18,6 +18,15 @@ public class Animal implements MapElement, MapElementObservable, Comparable<Anim
     public int numberOfChildren;
     public int longevity;
 
+    // used to follow in simulation
+    public boolean showWhenDead;
+    public boolean isFollowed;
+    public int followedNumberOfChildren;
+    public int followedNumberOfDescendants;
+    public int whenFollowingStarted;
+    public int n;
+
+
     public Animal(Vector2d position, double energy, Map map){
         this.position = position;
         this.lastPosition = position;
@@ -27,6 +36,10 @@ public class Animal implements MapElement, MapElementObservable, Comparable<Anim
         this.numberOfChildren = 0;
         this.map = map;
         this.longevity = 0;
+        this.showWhenDead = false;
+        this.isFollowed = false;
+        this.followedNumberOfChildren = 0;
+        this.followedNumberOfDescendants = 0;
     }
 
     public Animal(Vector2d position, double energy, Map map, Genes genes){
@@ -38,10 +51,18 @@ public class Animal implements MapElement, MapElementObservable, Comparable<Anim
         this.numberOfChildren = 0;
         this.map = map;
         this.longevity = 0;
+        this.showWhenDead = false;
+        this.isFollowed = false;
+        this.followedNumberOfChildren = 0;
+        this.followedNumberOfDescendants = 0;
     }
 
     public String toString(){
         return "now: " + position.toString() +" last: " + lastPosition.toString() + " energy: " + energy;
+    }
+
+    public String toStringG(){
+        return "Animal with genotype " + genes.toString();
     }
 
 

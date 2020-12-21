@@ -5,6 +5,7 @@ import Interfaces.MapElement;
 import Interfaces.MapElementObservable;
 import Interfaces.ObserverOfMapElements;
 
+import javax.swing.*;
 import java.util.*;
 
 public class Map implements IMap, ObserverOfMapElements {
@@ -31,6 +32,7 @@ public class Map implements IMap, ObserverOfMapElements {
     public HashMap<Vector2d, Grass> grass;
     public List<Animal> updateThePosition = new ArrayList<>();
     public List<Animal> dead = new ArrayList<>();
+
 
     public Map(int width, int length, int jungleWidth, int jungleLength, HashMap<Vector2d, List<Animal>> animals, HashMap<Vector2d, Grass> grass, double startEnergy, double energyNeeded, double grassEnergy){
         this.width = width;
@@ -116,6 +118,7 @@ public class Map implements IMap, ObserverOfMapElements {
         updateAnimals();
         eatGrass();
         animalReproduce();
+        updateFollowedAnimals();
         this.era++;
         this.numberOfAnimals = countAnimals();
         this.numberOfGrass = countGrass();
@@ -133,6 +136,7 @@ public class Map implements IMap, ObserverOfMapElements {
             for(Animal a : l){
                 if(a.isDead()){
                     dead.add(a);
+                    if(a.showWhenDead) JOptionPane.showMessageDialog(null, a.toStringG() + " is dead, era " + era);
                     toRemove.add(a);
                 }else a.longevity++;
             }
@@ -247,6 +251,9 @@ public class Map implements IMap, ObserverOfMapElements {
 
                 parent1.numberOfChildren++;
                 parent2.numberOfChildren++;
+
+                if(parent1.isFollowed) parent1.followedNumberOfChildren++;
+                if(parent2.isFollowed) parent2.followedNumberOfChildren++;
 
                 Vector2d childPosition = calculateChildPosition(parent1.position);
                 Genes childGenes = parent1.calculateChildDna(parent2);
@@ -399,7 +406,9 @@ public class Map implements IMap, ObserverOfMapElements {
         for(List<Animal> l : animals.values()){
             if(l == null) continue;
             for(Animal a : l){
-                dnaMap.put(a.genes.toString(), 1);
+                String dna = a.genes.toString();
+                if(dnaMap.containsKey(dna)) dnaMap.replace(dna, dnaMap.get(dna) + 1);
+                else dnaMap.put(dna, 1);
             }
         }
         String res = "";
@@ -411,6 +420,21 @@ public class Map implements IMap, ObserverOfMapElements {
         }
 
         return res;
+    }
+
+    private void updateFollowedAnimals(){
+        for(List<Animal> l : animals.values()){
+            if(l != null && l.size() != 0){
+                for(Animal a : l){
+                    if(a.isFollowed){
+                        if(era == a.n + a.whenFollowingStarted){
+                            a.isFollowed = false;
+                            JOptionPane.showMessageDialog(null, a.toStringG() + " after " + a.n + " days has " + a.followedNumberOfChildren + " children.");
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private boolean outOfBounds(Vector2d position){
