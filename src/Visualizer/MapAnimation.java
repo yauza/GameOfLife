@@ -32,6 +32,17 @@ public class MapAnimation extends JPanel implements MouseListener { //implements
     private int wst;
     private int hst;
 
+    private JFrame test;
+
+    private JPanel popupPanel;
+    private JLabel genotypeLabel;
+    private JLabel animalInfoLabel;
+    private JButton showWhenDeadButton;
+    private JButton followButton;
+    private JLabel typeNLabel;
+    private JTextField typeNText;
+
+
 
     public MapAnimation(Map map, MapVisualizer mapVisualizer){
         this.map = map;
@@ -117,10 +128,69 @@ public class MapAnimation extends JPanel implements MouseListener { //implements
             int x = e.getX();
             int y = e.getY();
             List<Animal> l = map.animals.get(new Vector2d(x/wst, y/hst));
-            if(l != null) {
+            if(l != null && l.size() != 0) {
                 Collections.sort(l);
                 Animal animal = l.get(0);
-                JOptionPane.showMessageDialog(this, "Genotype: " + animal.genes.toString(), "Animal details:", JOptionPane.PLAIN_MESSAGE);
+
+                test = new JFrame("Animal options");
+                test.getContentPane();
+                popupPanel = new JPanel();
+                popupPanel.setSize(new Dimension(400, 300));
+
+                genotypeLabel = new JLabel("Genotype: " + animal.genes.toString());
+                genotypeLabel.setBounds(50,10, genotypeLabel.getPreferredSize().width, genotypeLabel.getPreferredSize().height);
+
+                animalInfoLabel = new JLabel("Position: " + animal.position.toString());
+                animalInfoLabel.setBounds(50, 50, animalInfoLabel.getPreferredSize().width, animalInfoLabel.getPreferredSize().height);
+
+                typeNLabel = new JLabel("Type n: ");
+                typeNLabel.setBounds(50,100, typeNLabel.getPreferredSize().width, typeNLabel.getPreferredSize().height);
+
+                typeNText = new JTextField(6);
+                typeNText.setBounds(150,100, typeNText.getPreferredSize().width, typeNText.getPreferredSize().height);
+
+                // ---------------------------------------------------------------------
+
+                showWhenDeadButton = new JButton("Show when the Animal is dead");
+                showWhenDeadButton.setBounds(50,150,showWhenDeadButton.getPreferredSize().width, showWhenDeadButton.getPreferredSize().height);
+                showWhenDeadButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        animal.showWhenDead = true;
+                        showWhenDeadButton.setText("Wait for update!");
+                    }
+                });
+
+
+                followButton = new JButton("Follow Animal for n-days");
+                followButton.setBounds(50,200,followButton.getPreferredSize().width, followButton.getPreferredSize().height);
+                followButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        animal.isFollowed = true;
+                        animal.whenFollowingStarted = map.era;
+                        int temp;
+                        if(typeNText.getText().equals("")) temp = 0;
+                        else temp = Integer.parseInt(typeNText.getText());
+                        animal.n = temp;
+                        followButton.setText("Started following!");
+                    }
+                });
+
+                // ---------------------------------------------------------------------
+                popupPanel.setLayout(null);
+                popupPanel.add(genotypeLabel);
+                popupPanel.add(animalInfoLabel);
+                popupPanel.add(showWhenDeadButton);
+                popupPanel.add(typeNLabel);
+                popupPanel.add(typeNText);
+                popupPanel.add(followButton);
+                test.add(popupPanel);
+                Object [] options = {"elo", "puap", "a"};
+
+                //JOptionPane.showMessageDialog(null, popupPanel);
+                test.setSize(400, 300);
+                test.setVisible(true);
             }
 
         }

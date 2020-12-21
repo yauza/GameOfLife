@@ -183,4 +183,5 @@ public class MapVisualizer extends JPanel implements ActionListener {
 
         return res;
     }
+
 }

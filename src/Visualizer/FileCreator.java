@@ -19,9 +19,9 @@ public class FileCreator {
         File newFile = new File(name);
 
         if(newFile.createNewFile()){
-            System.out.println("jest w pyte");
+            System.out.println("Created file!");
         }else{
-            System.out.println("zle");
+            System.out.println("File with this name already exists, creating with different name...");
             fileNumber++;
             name = "stats" + fileNumber;
             newFile.createNewFile();

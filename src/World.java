@@ -20,31 +20,12 @@ public class World {
     public static void main(String [] args){
 
         try{
-            HashMap<Vector2d, List<Animal>> animals = new HashMap<>();
-            HashMap<Vector2d, Grass> grass = new HashMap<>();
-            Map map = new Map(10, 10, 5, 5, animals, grass, 10,1, 5);
-            map.randomlyPlaceAnimals(5);
-
-            int era = 10;
-
-//            while(era > 0){
-//                System.out.println(map.animals.keySet());
-//                System.out.println(map.animals.values());
-//                map.fillTheMap();
-//                System.out.println(map.toString());
-//                map.newEra();
-//                era--;
-//                System.out.println("---------------------------------------------------------------------------------------------");
-//            }
 
             ParametersLoader loader = new ParametersLoader();
             loader.loadParameters();
             StartMenu menu = new StartMenu();
-            menu.setParameters(loader);
-//            String [] data = {"100", "20", "30", "50", "40", "23", "90"};
-//
-//            FileCreator test = new FileCreator(data);
-//            test.createFileWithStats();
+            menu.setParameters(loader);                       // <- comment this line to use StartMenu without parameters from JSON file
+
 
 
         }catch (IllegalArgumentException exception){
