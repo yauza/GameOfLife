@@ -8,5 +8,6 @@ Type in values. To start the simulation click "Start".
 <img src="startmenu.PNG"/>
 
 ## Simulation
+Shows current positions of animals and grass. Detailed statistics are shown below the map, being updated every era.
 
 <img src="simulation.PNG"/>
